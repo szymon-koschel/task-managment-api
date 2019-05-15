@@ -1,8 +1,10 @@
 package com.api.task.controller;
 
+import com.api.task.exception.ResourceNotFoundException;
 import com.api.task.model.Group;
 import com.api.task.respository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,39 +23,37 @@ public class GroupController {
         return groupRepository.findAll();
     }
 
-//    //Create
+    //Create
     @PostMapping("")
     public Group create(@Valid @RequestBody Group group) {
         group.setGroup_id(null);
         return groupRepository.save(group);
     }
-//
-//    //Get Single by id
-//    @GetMapping("/{id}")
-//    public User getById(@PathVariable(value = "id") Long userId) {
-//        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-//    }
-//
-//    //Update
-//    @PutMapping("/{id}")
-//    public User update(@PathVariable(value = "id") Long userId, @Valid @RequestBody User userDetails) {
-//        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-//
-////        if (userDetails.getPassword() == null || userDetails.getPassword().equals("")) {
-////            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-////        }
-//
-//
-//        return userRepository.save(user);
-//    }
-//
-//    //Delete
-//    @DeleteMapping("{id}")
-//    public ResponseEntity<?> delete(@PathVariable(value = "id") Long userId) {
-//        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-//
-//        userRepository.delete(user);
-//
-//        return ResponseEntity.ok().build();
-//    }
+
+    //Get Single by id
+    @GetMapping("/{id}")
+    public Group getById(@PathVariable(value = "id") Long groupId) {
+        return groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId));
+    }
+
+
+    //Update
+    @PutMapping("/{id}")
+    public Group update(@PathVariable(value = "id") Long groupId, @Valid @RequestBody Group groupDetails) {
+        Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId));
+
+        group.setName(groupDetails.getName());
+        group.setToken(groupDetails.getToken());
+        return groupRepository.save(group);
+    }
+
+    //Delete
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> delete(@PathVariable(value = "id") Long groupId) {
+        Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId));
+
+        groupRepository.delete(group);
+
+        return ResponseEntity.ok().build();
+    }
 }
