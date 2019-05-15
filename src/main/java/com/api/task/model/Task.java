@@ -1,6 +1,7 @@
 package com.api.task.model;
 
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -8,6 +9,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "task")
@@ -18,7 +21,10 @@ public class Task {
     private Long task_id;
 
     @NotNull
-    private Long group_id;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "group_id", referencedColumnName = "group_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Group group_id;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
@@ -40,6 +46,18 @@ public class Task {
 
     private Integer periodicity = 0;
 
+    // JOINED TABLES
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(name = "task_user",
+            joinColumns = { @JoinColumn(name = "task_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") })
+    private Set<User> users = new HashSet<>();
+
+
     public Long getTask_id() {
         return task_id;
     }
@@ -48,11 +66,11 @@ public class Task {
         this.task_id = task_id;
     }
 
-    public Long getGroup_id() {
+    public Group getGroup_id() {
         return group_id;
     }
 
-    public void setGroup_id(Long group_id) {
+    public void setGroup_id(Group group_id) {
         this.group_id = group_id;
     }
 
@@ -102,5 +120,13 @@ public class Task {
 
     public void setPeriodicity(Integer periodicity) {
         this.periodicity = periodicity;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }

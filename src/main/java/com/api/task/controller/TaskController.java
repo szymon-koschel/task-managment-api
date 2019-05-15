@@ -2,6 +2,7 @@ package com.api.task.controller;
 
 import com.api.task.exception.ResourceNotFoundException;
 import com.api.task.model.Task;
+import com.api.task.model.User;
 import com.api.task.respository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -33,6 +35,13 @@ public class TaskController {
     @GetMapping("/{id}")
     public Task getTaskById(@PathVariable(value = "id") Long taskId) {
         return taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId));
+    }
+
+    //Get users by id
+    @GetMapping("/{id}/users")
+    public Set<User> getUsersTaskById(@PathVariable(value = "id") Long taskId) {
+        Task taskFound = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId));
+        return taskFound.getUsers();
     }
 
     //Update
