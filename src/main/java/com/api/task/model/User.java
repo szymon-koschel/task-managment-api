@@ -66,6 +66,16 @@ public class User {
     @JsonIgnore
     private Set<Group> groups = new HashSet<>();
 
+    public User() {
+    }
+
+    public User(@NotBlank String password, @NotBlank @Email String email, @NotBlank String firstname, @NotBlank String lastname) {
+        this.password = password;
+        this.email = email;
+        this.firstname = firstname;
+        this.lastname = lastname;
+    }
+
 
     public Long getUser_id() {
         return user_id;

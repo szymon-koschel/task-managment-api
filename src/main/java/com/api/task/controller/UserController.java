@@ -3,7 +3,7 @@ package com.api.task.controller;
 import com.api.task.exception.ResourceNotFoundException;
 import com.api.task.model.Task;
 import com.api.task.model.User;
-import com.api.task.respository.UserRepository;
+import com.api.task.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

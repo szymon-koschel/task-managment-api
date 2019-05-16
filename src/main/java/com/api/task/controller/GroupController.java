@@ -2,7 +2,7 @@ package com.api.task.controller;
 
 import com.api.task.exception.ResourceNotFoundException;
 import com.api.task.model.Group;
-import com.api.task.respository.GroupRepository;
+import com.api.task.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
