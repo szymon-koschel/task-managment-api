@@ -26,7 +26,7 @@ public class GroupController {
     //Create
     @PostMapping("")
     public Group create(@Valid @RequestBody Group group) {
-        group.setGroup_id(null);
+//        group.setGroup_id(null);
         return groupRepository.save(group);
     }
 
