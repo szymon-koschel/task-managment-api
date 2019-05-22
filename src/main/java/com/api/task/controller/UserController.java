@@ -6,6 +6,7 @@ import com.api.task.model.User;
 import com.api.task.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,8 +17,8 @@ import java.util.Set;
 @RequestMapping("/api/users")
 public class UserController {
 
-//    @Autowired
-//    private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     UserRepository userRepository;
@@ -55,10 +56,12 @@ public class UserController {
     public User update(@PathVariable(value = "id") Long userId, @Valid @RequestBody User userDetails) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-//        if (userDetails.getPassword() == null || userDetails.getPassword().equals("")) {
-//            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-//        }
+        if ((userDetails.getPassword() == null || userDetails.getPassword().equals(""))) {
+            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        }
 
+        user.setFirstname(userDetails.getFirstname());
+        user.setLastname(userDetails.getLastname());
 
         return userRepository.save(user);
     }
