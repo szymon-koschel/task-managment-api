@@ -28,6 +28,9 @@ public class TaskController {
     //Create
     @PostMapping("")
     public Task createTask(@Valid @RequestBody Task task) {
+        Set<User> users = task.getUsers();
+        task.getUsers().addAll(users);
+
         return taskRepository.save(task);
     }
 
@@ -53,6 +56,7 @@ public class TaskController {
         task.setDescription(taskDetails.getDescription());
         task.setStatus(taskDetails.getStatus());
         task.setTask_date(taskDetails.getTask_date());
+        task.setUsers(taskDetails.getUsers());
 
         return taskRepository.save(task);
     }

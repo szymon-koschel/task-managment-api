@@ -2,13 +2,17 @@ package com.api.task.controller;
 
 import com.api.task.exception.ResourceNotFoundException;
 import com.api.task.model.Group;
+import com.api.task.model.Token;
+import com.api.task.model.User;
 import com.api.task.repository.GroupRepository;
+import com.api.task.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/groups")
@@ -16,6 +20,9 @@ public class GroupController {
 
     @Autowired
     GroupRepository groupRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     //Get ALL
     @GetMapping("")
@@ -26,9 +33,31 @@ public class GroupController {
     //Create
     @PostMapping("")
     public Group create(@Valid @RequestBody Group group) {
-//        group.setGroup_id(null);
+        // Add owner to group
+        User user = userRepository.findById(group.getOwner().getUser_id()).orElseThrow(() -> new ResourceNotFoundException("Owner", "id", group.getOwner().getUser_id()));
+        group.getUsers().add(user);
+
         return groupRepository.save(group);
     }
+
+    //Add user
+    @PostMapping("/token")
+    public Group addUser(@Valid @RequestBody Token tokenRequest) {
+        Group group = groupRepository.findByToken(tokenRequest.getToken()).orElseThrow(() -> new ResourceNotFoundException("Group", "token", tokenRequest.getToken()));
+        User user = userRepository.findById(tokenRequest.getUser().getUser_id()).orElseThrow(() -> new ResourceNotFoundException("User", "id", tokenRequest.getUser().getUser_id()));
+
+        group.setOwner(user);
+        group.getUsers().add(user);
+
+        return groupRepository.save(group);
+    }
+
+    //Get all useres
+    @GetMapping("/{id}/users")
+    public Set<User> getUsersById(@PathVariable(value = "id") Long groupId) {
+        return groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId)).getUsers();
+    }
+
 
     //Get Single by id
     @GetMapping("/{id}")
