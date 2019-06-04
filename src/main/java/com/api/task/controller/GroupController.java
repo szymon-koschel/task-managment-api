@@ -35,6 +35,7 @@ public class GroupController {
     public Group create(@Valid @RequestBody Group group) {
         // Add owner to group
         User user = userRepository.findById(group.getOwner().getUser_id()).orElseThrow(() -> new ResourceNotFoundException("Owner", "id", group.getOwner().getUser_id()));
+        group.setOwner(user);
         group.getUsers().add(user);
 
         return groupRepository.save(group);
@@ -46,7 +47,6 @@ public class GroupController {
         Group group = groupRepository.findByToken(tokenRequest.getToken()).orElseThrow(() -> new ResourceNotFoundException("Group", "token", tokenRequest.getToken()));
         User user = userRepository.findById(tokenRequest.getUser().getUser_id()).orElseThrow(() -> new ResourceNotFoundException("User", "id", tokenRequest.getUser().getUser_id()));
 
-        group.setOwner(user);
         group.getUsers().add(user);
 
         return groupRepository.save(group);
