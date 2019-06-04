@@ -1,6 +1,7 @@
 package com.api.task.controller;
 
 import com.api.task.exception.ResourceNotFoundException;
+import com.api.task.model.Group;
 import com.api.task.model.Task;
 import com.api.task.model.User;
 import com.api.task.repository.UserRepository;
@@ -49,6 +50,13 @@ public class UserController {
     public Set<Task> getTasksById(@PathVariable(value = "id") Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         return user.getTasks();
+    }
+
+    //Get Groups for user
+    @GetMapping("/{id}/groups")
+    public Set<Group> getGroupsById(@PathVariable(value = "id") Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        return user.getGroups();
     }
 
     //Update

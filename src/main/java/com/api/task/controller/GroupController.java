@@ -85,4 +85,15 @@ public class GroupController {
 
         return ResponseEntity.ok().build();
     }
+
+    //Delete
+    @DeleteMapping("{id}/users/{id_user}")
+    public Group deleteUser(@PathVariable(value = "id") Long groupId, @PathVariable(value = "id_user") Long userId) {
+        Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("USer", "id", userId));
+        group.getUsers().remove(user);
+
+        return groupRepository.save(group);
+    }
+
 }
